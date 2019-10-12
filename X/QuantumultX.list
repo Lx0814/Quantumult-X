@@ -1,7 +1,3 @@
-# 2019年3月18日 21:12
-
-#【Settings】——【Favorites】——【+】——【Filter】，输入名字（随意），填上链接地址，勾选Filter Action。找到选项，左滑选择【Replace】，然后【OK】。
-
 [SERVER]
 Sample Offline 01 = shadowsocks, 204.79.197.200, 80, chacha20, "password", upstream-proxy=false, upstream-proxy-auth=false, obfs=http, obfs-host="bing.com"
 Sample Offline 02 = shadowsocksr, 204.79.197.200, 80, aes-128-cfb, "password", protocol=auth_chain_b, obfs=tls1.2_ticket_fastauth, obfs_param="bing.com"
