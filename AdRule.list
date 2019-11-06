@@ -197,7 +197,7 @@ DOMAIN-SUFFIX,.inmobi.cn,Reject
 DOMAIN-SUFFIX,.criteo.com,Reject
 
 
-# adblock rules refresh time: 2019-11-01 02:33:16
+# adblock rules refresh time: 2019-11-03 11:14:23
 DOMAIN-SUFFIX,000dn.com,Reject
 DOMAIN-SUFFIX,0024aaaa.com,Reject
 DOMAIN-SUFFIX,003store.com,Reject
@@ -239,6 +239,7 @@ DOMAIN-SUFFIX,0n6h.cn,Reject
 DOMAIN-SUFFIX,0nin.cn,Reject
 DOMAIN-SUFFIX,0ozo.cn,Reject
 DOMAIN-SUFFIX,0pj1f.cn,Reject
+DOMAIN-SUFFIX,0qkc.cn,Reject
 DOMAIN-SUFFIX,0x013d.website,Reject
 DOMAIN-SUFFIX,0x01e7.website,Reject
 DOMAIN-SUFFIX,0xxd.com,Reject
@@ -1086,6 +1087,7 @@ DOMAIN-SUFFIX,ads-union.jd.com,Reject
 DOMAIN-SUFFIX,ads.mp.mydas.mobi,Reject
 DOMAIN-SUFFIX,ads.servebom.com,Reject
 DOMAIN-SUFFIX,ads.sohu.com,Reject
+DOMAIN-SUFFIX,ads.sportradar.com,Reject
 DOMAIN-SUFFIX,ads.tremorhub.com,Reject
 DOMAIN-SUFFIX,ads.uc.cn,Reject
 DOMAIN-SUFFIX,ads.videosz.com,Reject
@@ -2812,6 +2814,7 @@ DOMAIN-SUFFIX,gjiai.com,Reject
 DOMAIN-SUFFIX,gjiak.com,Reject
 DOMAIN-SUFFIX,gjkpo.com,Reject
 DOMAIN-SUFFIX,gjuet.com,Reject
+DOMAIN-SUFFIX,gk1.582582.com,Reject
 DOMAIN-SUFFIX,gk1.zjbiz.net,Reject
 DOMAIN-SUFFIX,gky73.cn,Reject
 DOMAIN-SUFFIX,gladiatorbugs.com,Reject
@@ -2922,6 +2925,7 @@ DOMAIN-SUFFIX,gzmxybg.com,Reject
 DOMAIN-SUFFIX,gzmzts.com,Reject
 DOMAIN-SUFFIX,gznsyh.com,Reject
 DOMAIN-SUFFIX,gzqudou.com,Reject
+DOMAIN-SUFFIX,gzxiongwa.cn,Reject
 DOMAIN-SUFFIX,gzzena.com,Reject
 DOMAIN-SUFFIX,h01ce.cn,Reject
 DOMAIN-SUFFIX,h0o33.cn,Reject
@@ -3357,6 +3361,7 @@ DOMAIN-SUFFIX,jianbaimei.com,Reject
 DOMAIN-SUFFIX,jianbangjiaoyu.com,Reject
 DOMAIN-SUFFIX,jianduankm.com,Reject
 DOMAIN-SUFFIX,jiangchunli.cn,Reject
+DOMAIN-SUFFIX,jianglongjie.cn,Reject
 DOMAIN-SUFFIX,jiangmg.com,Reject
 DOMAIN-SUFFIX,jianjiaovip.vip,Reject
 DOMAIN-SUFFIX,jianmei123.com,Reject
@@ -3873,6 +3878,7 @@ DOMAIN-SUFFIX,mall043.com,Reject
 DOMAIN-SUFFIX,mammina.cn,Reject
 DOMAIN-SUFFIX,manage.wdfans.cn,Reject
 DOMAIN-SUFFIX,manorparty.com,Reject
+DOMAIN-SUFFIX,manparis.cn,Reject
 DOMAIN-SUFFIX,maokdata.com,Reject
 DOMAIN-SUFFIX,maomaotang.com,Reject
 DOMAIN-SUFFIX,maoyumao.net,Reject
