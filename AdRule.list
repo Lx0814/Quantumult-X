@@ -1,3 +1,7 @@
+# 苹果更新
+DOMAIN-SUFFIX,gdmf.apple.com,Reject
+DOMAIN-SUFFIX,mesu.apple.com,Reject
+DOMAIN-SUFFIX,updates-http.cdn-apple.com,Reject
 # 手工定义的 Reject 列表
 #待反馈是否误杀
 DOMAIN-SUFFIX,ad.12306.cn,Reject
