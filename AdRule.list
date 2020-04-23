@@ -1,3 +1,4 @@
+# build time: 2020-04-21 11:04:15
 # 手工定义的 Reject 列表
 #待反馈是否误杀
 DOMAIN-SUFFIX,ad.12306.cn,Reject
