@@ -1,10 +1,10 @@
 /** 
-# Quantumult X 资源解析器 (2020-05-17: 12:59 )
+# Quantumult X 资源解析器 (2020-05-22: 19:59 )
 
 本资源解析器作者: Shawn(请勿私聊问怎么用)，有bug请反馈: @Shawn_KOP_bot
 更新请关注tg频道: https://t.me/QuanX_API
 
-主要功能: 将各类服务器订阅解析成 QuantumultX 格式引用(支持 V2RayN/SSR/SS/Trojan/QuanX(conf&list)/Surge3⬆️(conf&list)格式)，并提供 1⃣️ 中的可选参数；
+主要功能: 将各类服务器订阅解析成 QuantumultX 格式引用(支持 V2RayN/SSR/SS/Trojan/QuanX(conf&list)/Surge(conf&list)格式)，并提供 1⃣️ 中的可选参数；
 
 附加功能: rewrite(重写) /filter(分流) 过滤, 可用于解决无法单独禁用远程引用中某(几)条 rewrite/hostname/filter, 以及直接导入 Surge 类型规则 list 的问题
 
@@ -104,9 +104,14 @@ if(type0=="Subs-B64Encode"){
 	flag=3;
 	total=content0.split("\n");
 	total=Rule_Handle(total,Pout0);
-}else {
-	$notify("😭 太难写了", "👻 本解析器 暂未支持 或 未能识别 该订阅格式", "☠️ 已尝试直接导入Quantumult X");
+}else if(content0.trim()==""){
+	$notify("‼️链接內容为空","⁉️请自行检查原始链接以及过滤参数",para);
 	flag=0;
+	$done({content : ""})
+}else {
+	$notify("😭 太难写了", "👻 本解析器 暂未支持/未能识别 该订阅格式", "☠️ 已尝试直接导入Quantumult X");
+	$done({content : content0});
+	flag=-1;
 }
 
 if(flag==3){
@@ -136,9 +141,11 @@ if(flag==3){
 	if(Psort0==1 || Psort0==-1){
 		total=QXSort(total,Psort0);
 	}
+	total=TagCheck_QX(total)
+	if(total.length==0){
+		$notify("‼️无有效节点","⁉️请自行检查原始链接以及过滤参数",para)
+		};
 	$done({content : total.join("\n")});	
-}else {
-	$done({content : content0});
 }
 
 
@@ -147,7 +154,7 @@ function Type_Check(subs){
 	var type=""
 	var RuleK=["host","domain","ip-cidr","geoip","user-agent","ip6-cidr"];
 	var QuanXK=["shadowsocks=","trojan=","vmess=","http="];
-	var SurgeK=["=ss","=vmess","=trojan","=http"];
+	var SurgeK=["=ss","=vmess","=trojan","=http","=custom"];
 	var SubK=["dm1lc3M6Ly","c3NyOi8v","dHJvamFu","c3M6Ly"];
 	var SubK2=["ss://","vmess://","ssr://","trojan://"];
 	var subi=subs.replace(/ /g,"")
@@ -283,10 +290,11 @@ function SubsEd2QX(subs,Pudp,Ptfo,Pcert,Ptls13){
 	const $base64 = new Base64()
 	var list0=$base64.decode(subs).split("\n");
 	var QuanXK=["shadowsocks=","trojan=","vmess=","http="];
-	var SurgeK=["=ss","=vmess","=trojan","=http"];
+	var SurgeK=["=ss","=vmess","=trojan","=http","=custom"];
 	var QXlist=[];
 	var node=""
 	for(i=0;i<list0.length;i++){
+		if(list0[i].trim().length>3){
 		var type=list0[i].split("://")[0].trim()
 		var listi=list0[i].replace(/ /g,"")
 		const QuanXCheck = (item) => listi.toLowerCase().indexOf(item)!=-1;
@@ -304,7 +312,9 @@ function SubsEd2QX(subs,Pudp,Ptfo,Pcert,Ptls13){
 		}else if(SurgeK.some(SurgeCheck)){
 			node = Surge2QX(list0[i])
 		}
+		//$notify("Final","results",node)
 		QXlist.push(node)
+	}
 	}
 	return QXlist
 }
@@ -340,6 +350,32 @@ function Subs2QX(subs,Pudp,Ptfo,Pcert,Ptls13){
 	return QXlist
 }
 
+// 检查节点名字(重复以及空名)等QuanX 不允许的情形
+function TagCheck_QX(content){
+	var Olist=content
+	var Nlist=[]
+	var nmlist=[]
+	for(i=0;i<Olist.length;i++){
+		var item=Olist[i]
+		var nm=item.split("tag")[1].split("=")[1].trim() // get tag
+		if(nm==""){
+			nm=" ["+item.split("=")[0]+"] "+item.split("=")[1].split(",")[0].split(":")[0]
+			$notify("⚠️ 订阅内出现空节点名:", "✅ 已自动将节点“类型+IP”作为节点名","✅ "+nm)
+			item=item.split("tag")[0]+"tag="+nm
+		}
+		while(nmlist.indexOf(nm)!=-1){
+			$notify("⚠️ 订阅内出现重复节点名:", "⚠️ "+ nm, "✅ 已自动添加“”符号作为区分:"+nm+"")
+			nm=nm+""
+			item=item.split("tag")[0]+"tag="+nm
+			}	
+		nmlist.push(nm)		
+		Nlist.push(item)
+		
+		}
+	return Nlist
+}
+	
+
 //V2RayN uri转换成 QUANX 格式
 function V2QX(subs,Pudp,Ptfo,Pcert,Ptls13){
 	const $base64 = new Base64()
@@ -361,7 +397,6 @@ function V2QX(subs,Pudp,Ptfo,Pcert,Ptls13){
 		}else {
 			nss.push(ip,mtd,pwd,obfs,tfo,udp,tag);}
 		QX=nss.join(", ");
-		//$notify("Lists","check",QX)
 	}
 	return QX
 }
@@ -623,7 +658,7 @@ function emoji_handle(servers,Pemoji){
 		var oname=ser0[i].split("tag=")[1];
 		var hd=ser0[i].split("tag=")[0];
 		var nname=emoji_del(oname);
-		var Lmoji={"🏳️‍🌈": ["流量","时间","应急","过期","Bandwidth","expire"],"🇦🇨": ["AC"],"🇦🇹": ["奥地利","维也纳"],"🇦🇺": ["AU","Australia","Sydney","澳大利亚","澳洲","墨尔本","悉尼"],"🇧🇪": ["BE","比利时"],"🇧🇬️": ["保加利亚"],"🇧🇷": ["BR","Brazil","巴西","圣保罗"],"🇨🇦": ["Canada","Waterloo","加拿大","蒙特利尔","温哥华","楓葉","枫叶","滑铁卢","多伦多"],"🇨🇭": ["瑞士","苏黎世"],"🇩🇪": ["DE","German","GERMAN","德国","德國","法兰克福"],"🇩🇰": ["丹麦"],"🇪🇸": ["ES"],"🇪🇺": ["EU"],"🇫🇮": ["Finland","芬兰","赫尔辛基"],"🇫🇷": ["FR","France","法国","法國","巴黎"],"🇬🇧": ["UK","GB","England","United Kingdom","英国","伦敦","英"],"🇲🇴": ["MO","Macao","澳门","CTM"],"🇭🇺":["匈牙利"],"🇭🇰": ["HK","Hongkong","Hong Kong","香港","深港","沪港","呼港","HKT","HKBN","HGC","WTT","CMI","穗港","京港","港"],"🇮🇩": ["Indonesia","印尼","印度尼西亚","雅加达"],"🇮🇪": ["Ireland","爱尔兰","都柏林"],"🇮🇳": ["India","印度","孟买","Mumbai"],"🇮🇹": ["Italy","Nachash","意大利","米兰","義大利"],"🇯🇵": ["JP","Japan","日本","东京","大阪","埼玉","沪日","穗日","川日","中日","泉日","杭日","深日","辽日"],"🇰🇵": ["KP","朝鲜"],"🇰🇷": ["KR","Korea","KOR","韩国","首尔","韩","韓"],"🇲🇽️": ["MEX","MX","墨西哥"],"🇲🇾": ["MY","Malaysia","马来西亚","吉隆坡"],"🇳🇱": ["NL","Netherlands","荷兰","荷蘭","尼德蘭","阿姆斯特丹"],"🇵🇭": ["PH","Philippines","菲律宾"],"🇷🇴": ["RO","罗马尼亚"],"🇷🇺": ["RU","Russia","俄罗斯","俄羅斯","伯力","莫斯科","圣彼得堡","西伯利亚","新西伯利亚","京俄","杭俄"],"🇸🇦": ["沙特","迪拜"],"🇸🇪": ["SE","Sweden"],"🇸🇬": ["SG","Singapore","新加坡","狮城","沪新","京新","泉新","穗新","深新","杭新"],"🇹🇭": ["TH","Thailand","泰国","泰國","曼谷"],"🇹🇷": ["TR","Turkey","土耳其","伊斯坦布尔"],"🇹🇼": ["TW","Taiwan","台湾","台北","台中","新北","彰化","CHT","台","HINET"],"🇺🇸": ["US","USA","America","United States","美国","美","京美","波特兰","达拉斯","俄勒冈","凤凰城","费利蒙","硅谷","矽谷","拉斯维加斯","洛杉矶","圣何塞","圣克拉拉","西雅图","芝加哥","沪美","哥伦布","纽约"],"🇻🇳": ["VN","越南","胡志明市"],"🇿🇦":["South Africa","南非"],"🇦🇪":["United Arab Emirates","阿联酋"],"🇦🇷": ["AR","阿根廷"],"🇨🇳": ["CN","China","回国","中国","江苏","北京","上海","广州","深圳","杭州","徐州","青岛","宁波","镇江","back"]}
+		var Lmoji={"🏳️‍🌈": ["流量","时间","应急","过期","Bandwidth","expire"],"🇦🇨": ["AC"],"🇦🇹": ["奥地利","维也纳"],"🇦🇺": ["AU","Australia","Sydney","澳大利亚","澳洲","墨尔本","悉尼"],"🇧🇪": ["BE","比利时"],"🇧🇬️": ["保加利亚"],"🇧🇷": ["BR","Brazil","巴西","圣保罗"],"🇨🇦": ["Canada","Waterloo","加拿大","蒙特利尔","温哥华","楓葉","枫叶","滑铁卢","多伦多"],"🇨🇭": ["瑞士","苏黎世"],"🇩🇪": ["DE","German","GERMAN","德国","德國","法兰克福"],"🇩🇰": ["丹麦"],"🇪🇸": ["ES"],"🇪🇺": ["EU"],"🇫🇮": ["Finland","芬兰","赫尔辛基"],"🇫🇷": ["FR","France","法国","法國","巴黎"],"🇬🇧": ["UK","GB","England","United Kingdom","英国","伦敦","英"],"🇲🇴": ["MO","Macao","澳门","CTM"],"🇭🇺":["匈牙利","Hungary"],"🇭🇰": ["HK","Hongkong","Hong Kong","香港","深港","沪港","呼港","HKT","HKBN","HGC","WTT","CMI","穗港","京港","港"],"🇮🇩": ["Indonesia","印尼","印度尼西亚","雅加达"],"🇮🇪": ["Ireland","爱尔兰","都柏林"],"🇮🇳": ["India","印度","孟买","Mumbai"],"🇮🇹": ["Italy","Nachash","意大利","米兰","義大利"],"🇯🇵": ["JP","Japan","日本","东京","大阪","埼玉","沪日","穗日","川日","中日","泉日","杭日","深日","辽日"],"🇰🇵": ["KP","朝鲜"],"🇰🇷": ["KR","Korea","KOR","韩国","首尔","韩","韓"],"🇲🇽️": ["MEX","MX","墨西哥"],"🇲🇾": ["MY","Malaysia","马来西亚","吉隆坡"],"🇳🇱": ["NL","Netherlands","荷兰","荷蘭","尼德蘭","阿姆斯特丹"],"🇵🇭": ["PH","Philippines","菲律宾"],"🇷🇴": ["RO","罗马尼亚"],"🇷🇺": ["RU","Russia","俄罗斯","俄羅斯","伯力","莫斯科","圣彼得堡","西伯利亚","新西伯利亚","京俄","杭俄"],"🇸🇦": ["沙特","迪拜"],"🇸🇪": ["SE","Sweden"],"🇸🇬": ["SG","Singapore","新加坡","狮城","沪新","京新","泉新","穗新","深新","杭新"],"🇹🇭": ["TH","Thailand","泰国","泰國","曼谷"],"🇹🇷": ["TR","Turkey","土耳其","伊斯坦布尔"],"🇹🇼": ["TW","Taiwan","台湾","台北","台中","新北","彰化","CHT","台","HINET"],"🇺🇸": ["US","USA","America","United States","美国","美","京美","波特兰","达拉斯","俄勒冈","凤凰城","费利蒙","硅谷","矽谷","拉斯维加斯","洛杉矶","圣何塞","圣克拉拉","西雅图","芝加哥","沪美","哥伦布","纽约"],"🇻🇳": ["VN","越南","胡志明市"],"🇿🇦":["South Africa","南非"],"🇦🇪":["United Arab Emirates","阿联酋"],"🇦🇷": ["AR","阿根廷"],"🇨🇳": ["CN","China","回国","中国","江苏","北京","上海","广州","深圳","杭州","徐州","青岛","宁波","镇江","back"]}
 		if(Pemoji==1) { 
 			str1 = JSON.stringify(Lmoji)
 			aa=JSON.parse(str1)
@@ -647,19 +682,43 @@ function Surge2QX(conf){
 	for(i=0;i<QXlist.length;i++){
 		var cnt=QXlist[i];
 		//console.log(cnt)
-		if(cnt.indexOf("trojan")!=-1){
-			Nlist.push(Strojan2QX(cnt))
+		if(cnt.split("=")[1].split(",")[0].indexOf("trojan")!=-1){
+			Nlist.push(Strojan2QX(cnt))//surge 3的trojan
 			}else if(cnt.split("=")[1].split(",")[0].indexOf("http")!=-1){
-				Nlist.push(Shttp2QX(cnt))
+				Nlist.push(Shttp2QX(cnt)) //surge 3的http
 			}else if(cnt.split("=")[1].split(",")[0].indexOf("vmess")!=-1){
-				Nlist.push(SVmess2QX(cnt))
+				Nlist.push(SVmess2QX(cnt)) //surge 3的Vmess
 			}else if(cnt.split("=")[1].split(",")[0].indexOf("ss")!=-1){
-				Nlist.push(SSS2QX(cnt))
+				Nlist.push(SSS2QX(cnt)) //surge 3的SS
+			}else if(cnt.split("=")[1].split(",")[0].indexOf("custom")!=-1){
+				Nlist.push(SCT2QX(cnt)) //surge2写法
 			}
 	}
 	return(Nlist)
 	//console.log(Nlist)
 	}
+	
+// surge2 中的 SS 类型写法(custom)
+//🇷🇺 俄罗斯 GIA = custom, ip, 152, aes-128-gcm, password123, https://dler.cloud/download/SSEncrypt.module, obfs=tls, obfs-host=xxx.windows.com, udp-relay=true
+function SCT2QX(content){
+	var cnt=content;
+	var tag="tag="+cnt.split("=")[0].trim();
+	var ipport=cnt.split(",")[1].trim()+":"+cnt.split(",")[2].trim();
+	var pmtd="method="+cnt.split(",")[3].trim();
+	var pwd="password="+cnt.split(",")[4].trim();
+	if(cnt.indexOf("obfs")!=-1){
+			pobfs="obfs="+cnt.replace(/obfs-host/,"").split("obfs")[1].split(",")[0].split("=")[1]
+		}else {pobfs=""}
+	var phost=cnt.indexOf("obfs-host")!=-1? "obfs-host"+cnt.split("obfs-host")[1].split(",")[0].trim():"";
+	if(phost!=""){
+			pobfs=pobfs+", "+phost
+		}
+	var ptfo= paraCheck(cnt,"tfo")=="true"? "fast-open=true":"fast-open=false";
+	var pudp= paraCheck(cnt,"udp")=="true"? "udp-relay=true":"udp-relay=false";
+	var nserver= pobfs!=""? "shadowsocks= "+[ipport,pmtd,pwd,pobfs,ptfo,pudp,tag].join(", "):"shadowsocks= "+[ipport,pmtd,pwd,ptfo,pudp,tag].join(", ");
+	return nserver
+}
+
 	
 // surge 中的 SS 类型
 function SSS2QX(content){
@@ -715,7 +774,7 @@ function SVmess2QX(content){
 function isSurge(content){
 	if(content.indexOf("=")!=-1){
 		cnt=content.split("=")[1].split(",")[0].trim()
-		if(cnt=="http"||cnt=="ss"||cnt=="trojan"||cnt=="vmess"){
+		if(cnt=="http"||cnt=="ss"||cnt=="trojan"||cnt=="vmess"||cnt=="custom"){
 			return content
 		}
 	}
