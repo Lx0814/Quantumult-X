@@ -1,5 +1,5 @@
 /** 
-# Quantumult X 资源解析器 (2020-05-23: 11:59 )
+# Quantumult X 资源解析器 (2020-05-23: 16:59 )
 
 本资源解析器作者: Shawn(请勿私聊问怎么用)，有bug请反馈: @Shawn_KOP_bot
 更新请关注tg频道: https://t.me/QuanX_API
@@ -8,7 +8,7 @@
 
 附加功能: rewrite(重写) /filter(分流) 过滤, 可用于解决无法单独禁用远程引用中某(几)条 rewrite/hostname/filter, 以及直接导入 Surge 类型规则 list 的问题
 
-0️⃣ 请在"订阅链接"后加入 "#" 后再加参数, 不同参数间请使用 "&" 来连接, 如: 
+0️⃣ 请在“订阅链接”后加入 "#" 后再加参数, 不同参数间请使用 "&" 来连接, 如: 
 "https://mysub.com#in=香港+台湾&emoji=1&tfo=1"
 (如是本地资源引用,请将参数"#in=xxx"填入资源文件第一行)
 
@@ -39,7 +39,7 @@ https://Advertising.list#policy=MineGroup&out=aweme, tag=🚦去广告，update-
 0️⃣ 在QuantumultX 配置文件中[general] 部分，加入 resource_parser_url=https://raw.githubusercontent.com/KOP-XIAO/QuantumultX/master/Scripts/resource-parser.js
 ⚠️⚠️如提示"没有自定义解析器"，请长按右下角图标后点击左侧刷新按钮，更新资源，后台退出 app，直到出现解析器说明
 1️⃣ 假设原始订阅连接为: https://raw.githubusercontent.com/crossutility/Quantumult-X/master/server-complete.txt , 
-2️⃣ 假设你想要保留的参数为 in=tls+ss, 想要过滤的参数为 out=http+2, 请注意下面订阅链接后一定要加 "#" 符号
+2️⃣ 假设你想要保留的参数为 in=tls+ss, 想要过滤的参数为 out=http+2, 请注意下面订阅链接后一定要加 ”#“ 符号
 3️⃣ 则填入 Quanx 节点引用的的总链接为  https://raw.githubusercontent.com/crossutility/Quantumult-X/master/server-complete.txt#in=tls+ss&out=http+2
 4️⃣ 填入上述链接, 并打开的资源解析器开关
 ------------------------------
@@ -148,6 +148,7 @@ if(flag==3){
 	if(total.length==0){
 		$notify("‼️无有效节点","⁉️请自行检查原始链接以及过滤参数",para)
 		};
+	//$notify("Final","List",total)
 	$done({content : total.join("\n")});	
 }
 
@@ -169,7 +170,7 @@ function Type_Check(subs){
 	var subsn=subs.split("\n")
 	if(SubK.some(SubCheck)){  //b64加密的订阅类型
 		type="Subs-B64Encode"
-	} else if(subsn.length>1 && SubK2.some(SubCheck)){ //未b64加密的多行URI 组合订阅
+	} else if(subsn.length>=1 && SubK2.some(SubCheck)){ //未b64加密的多行URI 组合订阅
 		type="Subs"
 	} else if(subi.indexOf("tag=")!=-1 && QuanXK.some(QuanXCheck)){
 		type="QuanX"
@@ -336,6 +337,7 @@ function Subs2QX(subs,Pudp,Ptfo,Pcert,Ptls13){
 	var QXlist=[];
 	var node=""
 	for(i=0;i<list0.length;i++){
+		if(list0[i].trim().length>3){
 		var type=list0[i].split("://")[0].trim()
 		var listi=list0[i].replace(/ /g,"")
 		const QuanXCheck = (item) => listi.toLowerCase().indexOf(item)!=-1;
@@ -353,10 +355,11 @@ function Subs2QX(subs,Pudp,Ptfo,Pcert,Ptls13){
 		}else if(SurgeK.some(SurgeCheck)){
 			node = Surge2QX(list0[i])
 		}
-				if(node!=""){
-        QXlist.push(node)}
+		if(node!=""){
+	QXlist.push(node)}
 	}
-    //$notify("final", "list", QXlist)
+	}
+	//$notify("final", "list", QXlist)
 	return QXlist
 }
 
@@ -370,7 +373,7 @@ function TagCheck_QX(content){
 		var nm=item.split("tag")[1].split("=")[1].trim() // get tag
 		if(nm==""){
 			nm=" ["+item.split("=")[0]+"] "+item.split("=")[1].split(",")[0].split(":")[0]
-			$notify("⚠️ 订阅内出现空节点名:", "✅ 已自动将节点[类型+IP]作为节点名","✅ "+nm)
+			$notify("⚠️ 订阅内出现空节点名:", "✅ 已自动将节点“类型+IP”作为节点名","✅ "+nm)
 			item=item.split("tag")[0]+"tag="+nm
 		}
 		while(nmlist.indexOf(nm)!=-1){
@@ -529,7 +532,7 @@ function TJ2QX(subs,Pudp,Ptfo,Pcert,Ptls13){
 	if(cnt.indexOf(":443")!=-1){
 		ip=cnt.split("@")[1].split(":443")[0]+":443";
 	}else{
-		ip=cnt.split("@")[1].split("?")[0]; //非 443 端口的奇葩机场？
+		ip=cnt.split("@")[1].split("?")[0].split("\n")[0].trim(); //非 443 端口的奇葩机场？
 	}
 	pwd="password="+cnt.split("@")[0];
 	obfs="over-tls=true";
@@ -538,7 +541,7 @@ function TJ2QX(subs,Pudp,Ptfo,Pcert,Ptls13){
 	if(Pcert==0){pcert="tls-verification=false"}	
 	pudp= Pudp==1? "udp-relay=true":"udp-relay=false";
 	ptfo= Ptfo==1? "fast-open=true":"fast-open=false";
-	tag="tag="+decodeURIComponent(cnt.split("#")[1])
+	tag=cnt.indexOf("#")!=-1? "tag="+decodeURIComponent(cnt.split("#")[1]):"tag= [trojan]"+ip
 	ntrojan.push(type+ip,pwd,obfs,pcert,ptls13,pudp,ptfo,tag)
 	QX=ntrojan.join(", ");
 	return QX;
