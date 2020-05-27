@@ -1,5 +1,5 @@
 /** 
-# Quantumult X 资源解析器 (2020-05-26: 23:59 )
+# Quantumult X 资源解析器 (2020-05-27: 13:59 )
 
 解析器作者: Shawn(请勿私聊问怎么用)
 有bug请反馈: @Shawn_KOP_bot
@@ -25,13 +25,13 @@
 - b64=1, 由于QuanX的特性，整体 base64-encode 后导入时，QuanX 会自动解码检查并忽略错误节点(所以可在解析提示"内容无效/invalid..."时，尝试使用此参数)
 
 2⃣️ "rewrite(重写)/filter(分流)" 引用--参数说明:
-- 参数为 "out=xxx", 多个参数用 "+" 连接;
+- in, out, 分别为 保留/排除, 多个参数用 "+" 连接(谨慎使用);
 - 分流规则额外支持 "policy=xx" 参数, 可用于直接指定策略组，或者为 Surge 格式的 rule-set 生成策略组(默认"Shawn"策略组)
 ⚠️⚠️ 由于 rewrite/filter 的 UI 中暂时没有提供解析器开关，想使用的请自行去配置文件中的相关行，添加参数"opt-parser=true"以开启，如：
 https://Advertising.list#policy=MineGroup&out=aweme, tag=🚦去广告，update-interval=86400, opt-parser=true, enabled=true
 
 3⃣️ 通用参数: ntf=1, 用于打开资源解析器的提示通知 (默认关闭), 
-- rewrite/filter 类型则会强制在有 out 参数时开启通知提示被删除（禁用）的内容，以防止规则误删除
+- rewrite/filter 类型则会强制在有 in/out 参数时开启通知提示被删除（禁用）的内容，以防止规则误删除
 
  */
 
@@ -51,9 +51,11 @@ https://Advertising.list#policy=Shawn&out=aweme, tag=🚦去广告，update-inte
 //$notify("test",$resource.link)
 var content0=$resource.content;
 var link0=$resource.link;
+//$notify(link0,"tt",content0)
 var para=(link0.indexOf("http")!=-1 && link0.indexOf("://")!=-1)?decodeURIComponent(link0):content0.split("\n")[0];
 var mark0=para.indexOf("#")!=-1? true:false;
 var type0=Type_Check(content0);
+//$notify(link0,"type",type0)
 var Pin0=mark0 && para.indexOf("in=")!=-1? para.split("#")[1].split("in=")[1].split("&")[0].split("+"):null;
 var Pout0=mark0 && para.indexOf("out=")!=-1? para.split("#")[1].split("out=")[1].split("&")[0].split("+"):null;
 var Pemoji=mark0 && para.indexOf("emoji=")!=-1? para.split("#")[1].split("emoji=")[1].split("&")[0].split("+"):null;
@@ -68,8 +70,7 @@ var PTls13=mark0 && para.indexOf("tls13=")!=-1? para.split("#")[1].split("tls13=
 var Pntf0= mark0 && para.indexOf("ntf=")!=-1? para.split("#")[1].split("ntf=")[1].split("&")[0].split("+"):0;
 var Pb64= mark0 && para.indexOf("b64=")!=-1? para.split("#")[1].split("b64=")[1].split("&")[0].split("+"):0;
 const subinfo=$resource.info;
-const subtag=$resource.tag;
-//$notify(type0,"tt",content0)
+const subtag=$resource.tag!=undefined? $resource.tag:"";
 const Base64=new Base64Code();
 
 //响应头流量处理部分
@@ -106,11 +107,11 @@ if(type0=="Subs-B64Encode"){
 }else if(type0=="rewrite"){
 	flag=2;
 	content0=content0.split("\n");
-	total=Rewrite_Filter(content0,Pout0);
+	total=Rewrite_Filter(content0,Pin0,Pout0);
 }else if(type0=="Rule"){
 	flag=3;
 	total=content0.split("\n");
-	total=Rule_Handle(total,Pout0);
+	total=Rule_Handle(total,Pout0,Pin0);
 }else if(content0.trim()==""){
 	$notify("‼️ "+"["+subtag+"]"+" 链接返回內容为空","⁉️请自行复制原始链接到浏览器, 确认链接是否失效",para.split("#")[0]);
 	flag=0;
@@ -166,15 +167,21 @@ function Type_Check(subs){
 	var QuanXK=["shadowsocks=","trojan=","vmess=","http="];
 	var SurgeK=["=ss,","=vmess,","=trojan,","=http,","=custom,","=https,"];
 	var SubK=["dm1lc3M6Ly","c3NyOi8v","dHJvamFu","c3M6Ly"];
+	var RewriteK=[" url "]
 	var SubK2=["ss://","vmess://","ssr://","trojan://"];
-	var html="<!DOCTYPE html>"
+	var html="DOCTYPE html"
 	var subi=subs.replace(/ /g,"")
 	const RuleCheck = (item) => subs.toLowerCase().indexOf(item)!=-1;
 	const QuanXCheck = (item) => subi.toLowerCase().indexOf(item)!=-1;
 	const SurgeCheck = (item) => subi.toLowerCase().indexOf(item)!=-1;
 	const SubCheck = (item) => subs.indexOf(item)!=-1;
+	const RewriteCheck = (item) => subs.indexOf(item)!=-1;
 	var subsn=subs.split("\n")
-	if(SubK.some(SubCheck)){  //b64加密的订阅类型
+	//$notify("Subs","cnt",subs)
+	if(subs.indexOf(html)!=-1){
+		$notify("‼️  该链接返回内容有误","⁉️ 请自行复制原始链接到浏览器, 确认链接是否失效",link0);
+		type="web";
+	} else if(SubK.some(SubCheck)){  //b64加密的订阅类型
 		type="Subs-B64Encode"
 	} else if(subsn.length>=1 && SubK2.some(SubCheck)){ //未b64加密的多行URI 组合订阅
 		type="Subs"
@@ -184,89 +191,172 @@ function Type_Check(subs){
 		type="Surge";
 	} else if(SurgeK.some(SurgeCheck)){
 		type="Surge"
-	} else if(subs.indexOf("hostname")!=-1){
+	} else if(subi.indexOf("hostname=")!=-1 || RewriteK.some(RewriteCheck)){
 		type="rewrite"
 	} else if(RuleK.some(RuleCheck) && subs.indexOf(html)==-1){
 		type="Rule";
-	} else if(subs.indexOf(html)!=-1){
-		$notify("‼️ "+"["+subtag+"]"+" 链接返回内容有误","⁉️ 请自行复制原始链接到浏览器, 确认链接是否失效",para.split("#")[0]);
-       type="web"
 	}
 	return type
 }
 
+
 function Trim(item){
 	return item.trim()
 	}
-//删除 rewrite 引用中的某部分
-function Rewrite_Filter(subs,Pout){
-	cnt=subs;
-	nlist=[];
-	drewrite=[];
-	if(Pout!="" && Pout){
-    Pout=Pout.map(Trim);
-	for(var i=0;i<cnt.length;i++){
-		var cc=cnt[i];
-		if(cc.trim()!=""){
-		const exclude = (item) => cc.indexOf(item)!=-1;
-		if(Pout.some(exclude)){
-			if(cc.indexOf("hostname")!=-1 && cc.indexOf("=")!=-1){ //hostname  部分
-				nname=[];//保留项
-				dname=[];//删除项目
-				hname=cc.split("=")[1].split(",");
-				for(var j=0;j<hname.length;j++){
-					dd=hname[j]
-					const excludehn = (item) => dd.indexOf(item)!=-1;
-					if(!Pout.some(excludehn)){
-						nname.push(hname[j])	
-					}else{dname.push(hname[j])}
-				} //for j
-				hname="hostname="+nname.join(", ");
-				//console.log(hname)
-				nlist.push(hname)
-				if(dname.length>0){$notify("🤖 您为 "+"["+subtag+"]"+" 添加的 [rewrite] 过滤关键词为:","🚫 "+Pout0.join(", "),"☠️ 主机名 hostname 中已为您删除以下"+dname.length+"个匹配项:"+"\n"+dname.join(",") )}
-				}  // if cc -hostname
-				else{
-					drewrite.push(cc);
-					nlist.push(cc.replace(/ url /g," - "));
-				}
-		}else{ //if Pout.some
-				nlist.push(cc)
-					} //else
+
+
+//Rewrite过滤，使用+连接多个关键词(逻辑"或"):in 为保留，out 为排除
+function Rewrite_Filter(subs,Pin,Pout){
+	//var subs=subs0.split("\n")
+	var Nlist=[];
+	var noteK=["//","#",";"];
+	var hnc=0;
+	var dwrite=[]
+	var hostname=""
+	for(var i=0;i<subs.length;i++){
+		subi=subs[i].trim();
+		var subii=subi.replace(/ /g,"")
+		if(subi!=""){
+		const notecheck = (item) => subi.indexOf(item)==0
+		if(noteK.some(notecheck)){ // 注释项跳过 
+		//console.log("notion")
+			//Nlist.push(subs[i])
+			continue;
+		}else if(hnc==0 && subii.indexOf("hostname=")==0){ //host name 部分
+			//console.log("hostname");
+			hostname=HostNamecheck(subi,Pin,Pout);
+		}else if(subii.indexOf("hostname=")!=0){ //rewrite 部分
+		var inflag=Rcheck(subi,Pin);
+		var outflag=Rcheck(subi,Pout);
+		if(outflag==1){
+			dwrite.push(subi); //out 命中
+		}else if(outflag==0 && inflag!=0){ //out 未命中 && in 未排除
+			Nlist.push(subi);
+		}else if(outflag==2 && inflag!=0){ //无 out 参数 && in 未排除
+			Nlist.push(subi);
+		}//		
+		} 
 		}
-	}//cnt for
-	if(drewrite.length>0){$notify("🤖 您为 "+"["+subtag+"]"+" 添加的 [rewrite] 过滤关键词为:","🚫 "+Pout0.join(", "),"☠️ 复写 rewrite 中已为您禁用以下"+drewrite.length+"个匹配项:"+"\n"+drewrite.join("\n") )};
-	return nlist
-	}else { // Pout if
-//$notify("no filter at all")
-		return cnt;}
+	}
+	if(dwrite.length>0){
+		$notify("🤖 您为 "+"["+subtag+"]"+" 添加的 [rewrite] 过滤关键词为:","🚫 禁用: "+Pout0.join(", "),"☠️ 复写 rewrite 中已禁用以下"+dwrite.length+"个匹配项:"+"\n"+dwrite.join("\n") )
+	}
+	if(Nlist.length==0){$notify("🤖 您为 "+"["+subtag+"]"+" 添加的筛选关键词为:","✅ 保留: "+Pin+",🚫 删除: "+Pout,"☠️ 筛选后剩余rewrite规则数为 0️⃣ 条, 请检查参数及原始链接" )}
+	if(hostname!=""){Nlist.push(hostname)}
+	return Nlist
+}
+
+// 主机名处理
+function HostNamecheck(content,parain,paraout){
+	var hname=content.replace(/ /g,"").split("=")[1].split(",");
+	var nname=[];
+	var dname=[]; //删除项
+	for(i=0;i<hname.length;i++){
+		dd=hname[i]
+		const excludehn = (item) => dd.indexOf(item)!=-1;
+		if(paraout && paraout!=""){
+		if(!paraout.some(excludehn)){ 
+			if(parain && parain!=""){
+				if(parain.some(excludehn)){ //Pin
+					nname.push(hname[i])
+				}
+			}else{nname.push(hname[i])}			
+		}else{dname.push(hname[i])}
+	}else if(parain && parain!=""){
+		if(parain.some(excludehn)){ //Pin
+					nname.push(hname[i])
+				}
+			}else {
+				nname.push(hname[i])
+			}
+	} //for j
+	hname="hostname="+nname.join(", ");
+	if(dname.length>0){
+		if(paraout && paraout!=""){
+			$notify("🤖 您为 "+"["+subtag+"]"+" 添加的 [rewrite] 过滤关键词为:","🚫 删除: "+paraout,"☠️ 主机名 hostname 中已删除以下"+dname.length+"个匹配项:"+"\n"+dname.join(",") )
+		}
+	}
+	if(nname.length==0){
+		$notify("🤖 您为 "+"["+subtag+"]"+" 添加的 [rewrite] 筛选关键词为:","✅ 保留: "+parain+",🚫 删除: "+paraout,"☠️ 主机名 hostname 中剩余项为 0️⃣, 请检查参数及原始链接" )
+	}
+	return hname
+}
+
+//Rewrite 筛选的函数
+function Rcheck(content,param){
+	name=content.toUpperCase()
+	if(param){
+		var flag=0; //没命中
+		const checkpara= (item) => name.indexOf(item.toUpperCase()) !=-1;
+		if(param.some(checkpara)){
+			flag=1 //命中
+		}
+	return flag
+	}else { //if param
+		return 2} //无参数
 }
 
 //分流规则转换及过滤，可用于 surge 及 quanx 的 rule-list
-function Rule_Handle(subs,Pout){
+function Rule_Handle(subs,Pout,Pin){
 	cnt=subs //.split("\n");
-	out=Pout; //过滤参数
+	Tin=Pin; //保留参数
+	Tout=Pout; //过滤参数
 	ply=Ppolicy; //策略组
 	var nlist=[]
 	var RuleK=["//","#",";"];
-	if(Pout!="" && Pout!=null){
+	if(Tout!="" && Tout!=null){
 		var dlist=[];
 		for(var i=0;i<cnt.length;i++){
 			cc=cnt[i]
-			const exclude = (item) =>cc.indexOf(item)!=-1;
+			const exclude = (item) =>cc.indexOf(item)!=-1; // 删除项
 			const RuleCheck = (item) => cc.indexOf(item)!=-1; //无视注释行
-			if(Pout.some(exclude) && !RuleK.some(RuleCheck)){
+			if(Tout.some(exclude) && !RuleK.some(RuleCheck)){
 				dlist.push(cnt[i])
-			} else if(!RuleK.some(RuleCheck) && cc){ //if Pout.some, 不操作注释项
+			} else if(!RuleK.some(RuleCheck) && cc ){ //if Pout.some, 不操作注释项
 			dd=Rule_Policy(cc);
+			if(Tin!="" && Tin!=null){
+			const include = (item) =>dd.indexOf(item)!=-1; // 保留项
+			if(Tin.some(include)){
 			nlist.push(dd);
-			}
+		}
+	}else{nlist.push(dd);
+	}
+		} //else if cc
 		}//for cnt
 		var no=dlist.length
-		if(dlist.length>0){$notify("🤖 您为 "+"["+subtag+"]"+" 添加的分流 [filter] 过滤关键词为:","🚫 "+out,"☠️ 已为您删除以下 "+no+"条匹配规则:"+"\n"+dlist.join("\n"))
-		}else{$notify("🤖 您为 "+"["+subtag+"]"+" 添加的[filter]过滤关键词为:","🚫 "+out,"☠️ 没有发现任何匹配项")}
-		return nlist
-	} else{return cnt.map(Rule_Policy)}//if Pout
+		if(dlist.length>0){$notify("🤖 您为 "+"["+subtag+"]"+" 添加的分流 [filter] 筛选删除关键词为:","🚫 "+ Tout,"☠️ 已删除以下 "+no+"条匹配规则:"+"\n"+dlist.join("\n"))
+		}else{$notify("🤖 您为 "+"["+subtag+"]"+" 添加的 [filter] 筛选删除关键词为:","🚫 "+Tout,"☠️ 没有发现任何匹配项, , 请检查参数或原始链接")}
+		if(Tin!="" && Tin!=null){  //有 in 跟 out 参数时
+		if(nlist.length>0 ){
+			$notify("🤖 您为 "+"["+subtag+"]"+" 添加的分流 [filter] 筛选保留关键词为:","✅ "+Tin,"🎯 已保留以下 "+nlist.length+"条匹配规则:"+"\n"+nlist.join("\n"))
+		} else{$notify("🤖 您为 "+"["+subtag+"]"+" 添加的分流 [filter] 筛选关键词为:","✅ 保留:"+Tin+",🚫 删除:"+Tout,"☠️ 筛选后剩余规则数为 0️⃣ 条, 请检查参数及原始链接")
+	} 
+	} else {// if Tin (No Tin)
+		if(nlist.length==0 ){
+			$notify("🤖 您为 "+"["+subtag+"]"+" 添加的分流 [filter] 筛选删除关键词为:","🚫 "+Tout,"☠️ 筛选后剩余规则数为 0️⃣ 条, 请检查参数及原始链接")
+	}
+	} 
+	return nlist;
+	} else if(Tin!="" && Tin!=null){ //if Tout
+		var dlist=[];
+		for(var i=0;i<cnt.length;i++){
+			cc=cnt[i]
+			const RuleCheck = (item) => cc.indexOf(item)!=-1; //无视注释行
+			if(!RuleK.some(RuleCheck) && cc ){ //if Pout.some, 不操作注释项
+			dd=Rule_Policy(cc);
+			const include = (item) =>dd.indexOf(item)!=-1; // 保留项
+			if(Tin.some(include)){
+			nlist.push(dd);
+		}
+		}
+	} // for cnt
+	if(nlist.length>0){
+	$notify("🤖 您为 "+"["+subtag+"]"+" 添加的分流 [filter] 保留筛选关键词为:","✅ "+Tin,"🎯 已保留以下 "+nlist.length+"条匹配规则:"+"\n"+nlist.join("\n"))
+} else{$notify("🤖 您为 "+"["+subtag+"]"+" 添加的分流 [filter] 保留筛选关键词为:","✅ "+Tin,"☠️ 筛选后剩余规则数为 0️⃣ 条, 请检查参数及原始链接")}
+	return nlist;
+	} else {  //if Tin
+	return cnt.map(Rule_Policy)
+}
 }
 
 function Rule_Policy(content){ //增加、替换 policy
@@ -480,7 +570,7 @@ function Scheck(content,param){
 	if(param){
 		var flag=0;
 	for(i=0;i<param.length;i++){
-		console.log(param[i])
+		//console.log(param[i])
 		var params=param[i].split(".");
 		const checkpara= (item) => name.indexOf(item.toUpperCase()) !=-1;
 		if(params.every(checkpara)){
@@ -679,7 +769,7 @@ function emoji_handle(servers,Pemoji){
 		var oname=ser0[i].split("tag=")[1];
 		var hd=ser0[i].split("tag=")[0];
 		var nname=emoji_del(oname);
-		var Lmoji={"🏳️‍🌈": ["流量","时间","应急","过期","Bandwidth","expire"],"🇦🇨": ["AC"],"🇦🇹": ["奥地利","维也纳"],"🇦🇺": ["AU","Australia","Sydney","澳大利亚","澳洲","墨尔本","悉尼"],"🇧🇪": ["BE","比利时"],"🇧🇬️": ["保加利亚","Bulgaria"],"🇧🇷": ["BR","Brazil","巴西","圣保罗"],"🇨🇦": ["Canada","Waterloo","加拿大","蒙特利尔","温哥华","楓葉","枫叶","滑铁卢","多伦多"],"🇨🇭": ["瑞士","苏黎世"],"🇩🇪": ["DE","German","GERMAN","德国","德國","法兰克福"],"🇩🇰": ["丹麦"],"🇪🇸": ["ES"],"🇪🇺": ["EU"],"🇫🇮": ["Finland","芬兰","赫尔辛基"],"🇫🇷": ["FR","France","法国","法國","巴黎"],"🇬🇧": ["UK","GB","England","United Kingdom","英国","伦敦","英"],"🇲🇴": ["MO","Macao","澳门","CTM"],"🇭🇺":["匈牙利","Hungary"],"🇭🇰": ["HK","Hongkong","Hong Kong","香港","深港","沪港","呼港","HKT","HKBN","HGC","WTT","CMI","穗港","京港","港"],"🇮🇩": ["Indonesia","印尼","印度尼西亚","雅加达"],"🇮🇪": ["Ireland","爱尔兰","都柏林"],"🇮🇳": ["India","印度","孟买","Mumbai"],"🇮🇹": ["Italy","Nachash","意大利","米兰","義大利"],"🇯🇵": ["JP","Japan","日本","东京","大阪","埼玉","沪日","穗日","川日","中日","泉日","杭日","深日","辽日"],"🇰🇵": ["KP","朝鲜"],"🇰🇷": ["KR","Korea","KOR","韩国","首尔","韩","韓"],"🇲🇽️": ["MEX","MX","墨西哥"],"🇲🇾": ["MY","Malaysia","马来西亚","吉隆坡"],"🇳🇱": ["NL","Netherlands","荷兰","荷蘭","尼德蘭","阿姆斯特丹"],"🇵🇭": ["PH","Philippines","菲律宾"],"🇷🇴": ["RO","罗马尼亚"],"🇷🇺": ["RU","Russia","俄罗斯","俄羅斯","伯力","莫斯科","圣彼得堡","西伯利亚","新西伯利亚","京俄","杭俄"],"🇸🇦": ["沙特","迪拜"],"🇸🇪": ["SE","Sweden"],"🇸🇬": ["SG","Singapore","新加坡","狮城","沪新","京新","泉新","穗新","深新","杭新"],"🇹🇭": ["TH","Thailand","泰国","泰國","曼谷"],"🇹🇷": ["TR","Turkey","土耳其","伊斯坦布尔"],"🇹🇼": ["TW","Taiwan","台湾","台北","台中","新北","彰化","CHT","台","HINET"],"🇺🇸": ["US","USA","America","United States","美国","美","京美","波特兰","达拉斯","俄勒冈","凤凰城","费利蒙","硅谷","矽谷","拉斯维加斯","洛杉矶","圣何塞","圣克拉拉","西雅图","芝加哥","沪美","哥伦布","纽约"],"🇻🇳": ["VN","越南","胡志明市"],"🇿🇦":["South Africa","南非"],"🇦🇪":["United Arab Emirates","阿联酋"],"🇦🇷": ["AR","阿根廷"],"🇨🇳": ["CN","China","回国","中国","江苏","北京","上海","广州","深圳","杭州","徐州","青岛","宁波","镇江","back"]}
+		var Lmoji={"🏳️‍🌈": ["流量","时间","应急","过期","Bandwidth","expire"],"🇦🇨": ["AC"],"🇦🇹": ["奥地利","维也纳"],"🇦🇺": ["AU","Australia","Sydney","澳大利亚","澳洲","墨尔本","悉尼"],"🇧🇪": ["BE","比利时"],"🇧🇬️": ["保加利亚","Bulgaria"],"🇧🇷": ["BR","Brazil","巴西","圣保罗"],"🇨🇦": ["Canada","Waterloo","加拿大","蒙特利尔","温哥华","楓葉","枫叶","滑铁卢","多伦多"],"🇨🇭": ["瑞士","苏黎世"],"🇩🇪": ["DE","German","GERMAN","德国","德國","法兰克福"],"🇩🇰": ["丹麦"],"🇪🇸": ["ES","西班牙","Spain"],"🇪🇺": ["EU","欧盟","欧罗巴"],"🇫🇮": ["Finland","芬兰","赫尔辛基"],"🇫🇷": ["FR","France","法国","法國","巴黎"],"🇬🇧": ["UK","GB","England","United Kingdom","英国","伦敦","英"],"🇲🇴": ["MO","Macao","澳门","CTM"],"🇭🇺":["匈牙利","Hungary"],"🇭🇰": ["HK","Hongkong","Hong Kong","香港","深港","沪港","呼港","HKT","HKBN","HGC","WTT","CMI","穗港","京港","港"],"🇮🇩": ["Indonesia","印尼","印度尼西亚","雅加达"],"🇮🇪": ["Ireland","爱尔兰","都柏林"],"🇮🇳": ["India","印度","孟买","Mumbai"],"🇮🇹": ["Italy","Nachash","意大利","米兰","義大利"],"🇯🇵": ["JP","Japan","日本","东京","大阪","埼玉","沪日","穗日","川日","中日","泉日","杭日","深日","辽日"],"🇰🇵": ["KP","朝鲜"],"🇰🇷": ["KR","Korea","KOR","韩国","首尔","韩","韓"],"🇲🇽️": ["MEX","MX","墨西哥"],"🇲🇾": ["MY","Malaysia","马来西亚","吉隆坡"],"🇳🇱": ["NL","Netherlands","荷兰","荷蘭","尼德蘭","阿姆斯特丹"],"🇵🇭": ["PH","Philippines","菲律宾"],"🇷🇴": ["RO","罗马尼亚"],"🇷🇺": ["RU","Russia","俄罗斯","俄羅斯","伯力","莫斯科","圣彼得堡","西伯利亚","新西伯利亚","京俄","杭俄"],"🇸🇦": ["沙特","迪拜"],"🇸🇪": ["SE","Sweden"],"🇸🇬": ["SG","Singapore","新加坡","狮城","沪新","京新","泉新","穗新","深新","杭新"],"🇹🇭": ["TH","Thailand","泰国","泰國","曼谷"],"🇹🇷": ["TR","Turkey","土耳其","伊斯坦布尔"],"🇹🇼": ["TW","Taiwan","台湾","台北","台中","新北","彰化","CHT","台","HINET"],"🇺🇸": ["US","USA","America","United States","美国","美","京美","波特兰","达拉斯","俄勒冈","凤凰城","费利蒙","硅谷","矽谷","拉斯维加斯","洛杉矶","圣何塞","圣克拉拉","西雅图","芝加哥","沪美","哥伦布","纽约"],"🇻🇳": ["VN","越南","胡志明市"],"🇿🇦":["South Africa","南非"],"🇦🇪":["United Arab Emirates","阿联酋"],"🇦🇷": ["AR","阿根廷"],"🇨🇳": ["CN","China","回国","中国","江苏","北京","上海","广州","深圳","杭州","徐州","青岛","宁波","镇江","back"]}
 		if(Pemoji==1) { 
 			str1 = JSON.stringify(Lmoji)
 			aa=JSON.parse(str1)
