@@ -7,6 +7,7 @@ http-response https:\/\/api\.termius\.com\/api\/v3\/bulk\/account\/ requires-bod
 
 QX：
 https:\/\/api\.termius\.com\/api\/v3\/bulk\/account\/ url script-response-body https://raw.githubusercontent.com/NobyDa/Script/master/Surge/JS/Termius.js
+https:\/\/api\.termius\.com\/api\/v3\/bulk\/account\/ url script-response-body https://raw.githubusercontent.com/Datou86/Quantumult-X/master/Script/Termius.js
 
 Surge & QX MITM = api.termius.com
 */
