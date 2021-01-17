@@ -70,11 +70,18 @@
           "desc": "此处请填写你的京东CrazyJoy码"
         },
         {
-          "id": "joy_shareCode1",
+          "id": "kd_shareCode1",
           "name": "账号一的京东口袋书店",
           "val": "",
           "type": "text",
           "desc": "此处请填写你的口袋书店互助码"
+        },
+        {
+          "id": "xj_shareCode1",
+          "name": "账号一的京东口签到领现金",
+          "val": "",
+          "type": "text",
+          "desc": "此处请填写你的领现金互助码"
         },	
 	{
           "id": "zd_shareCode2",
@@ -119,11 +126,18 @@
           "desc": "此处请填写你的京东CrazyJoy码"
         },
         {
-          "id": "joy_shareCode2",
+          "id": "kd_shareCode2",
           "name": "账号二的京东口袋书店",
           "val": "",
           "type": "text",
           "desc": "此处请填写你的口袋书店互助码"
+        },
+        {
+          "id": "xj_shareCode2",
+          "name": "账号二的京东口签到领现金",
+          "val": "",
+          "type": "text",
+          "desc": "此处请填写你的领现金互助码"
         },	
 	{
           "id": "zd_shareCode3",
@@ -168,11 +182,18 @@
           "desc": "此处请填写你的京东CrazyJoy码"
         },
         {
-          "id": "joy_shareCode3",
+          "id": "kd_shareCode3",
           "name": "账号三的京东口袋书店",
           "val": "",
           "type": "text",
           "desc": "此处请填写你的口袋书店互助码"
+        },
+        {
+          "id": "xj_shareCode3",
+          "name": "账号三的京东口签到领现金",
+          "val": "",
+          "type": "text",
+          "desc": "此处请填写你的领现金互助码"
         }	      
       ],
       "author": "@Meteor53",
