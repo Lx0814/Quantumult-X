@@ -19,7 +19,13 @@ cron "15,20 10 1,10,20 * *" script-path=https://raw.githubusercontent.com/photon
 ====================================小火箭=============================
 互助码提交 = type=cron,script-path=https://raw.githubusercontent.com/photonmang/quantumultX/master/cache/shareCode.js, cronexpr="15,20 10 1,10,20 * *", timeout=500, enable=true
 
+
+
+12.28  新增京东crazyjoy助力，请及时更新boxjs订阅进行添加joy助力码
+1.10   调整执行返回代码，改为状态码判断
 */
+
+
 const jsname='互助码提交'
 const $ = Env(jsname)
 const dd_shareCode1 = $.getdata('dd_shareCode1') ;
@@ -27,32 +33,58 @@ const jx_shareCode1 = $.getdata('jx_shareCode1') ;
 const zd_shareCode1 = $.getdata('zd_shareCode1') ;
 const nc_shareCode1 = $.getdata('nc_shareCode1') ;
 const mc_shareCode1 = $.getdata('mc_shareCode1') ;
+const joy_shareCode1 = $.getdata('joy_shareCode1') ;
+const kd_shareCode1 = $.getdata('kd_shareCode1') ;
+const xj_shareCode1 = $.getdata('xj_shareCode1') ;
+const nh_shareCode1 = $.getdata('nh_shareCode1') ;
+const zz_shareCode1 = $.getdata('zz_shareCode1') ;
 
 const dd_shareCode2 = $.getdata('dd_shareCode2') ;
 const jx_shareCode2 = $.getdata('jx_shareCode2') ;
 const zd_shareCode2 = $.getdata('zd_shareCode2') ;
 const nc_shareCode2 = $.getdata('nc_shareCode2') ;
 const mc_shareCode2 = $.getdata('mc_shareCode2') ;
+const joy_shareCode2 = $.getdata('joy_shareCode2') ;
+const kd_shareCode2 = $.getdata('kd_shareCode2') ;
+const xj_shareCode2 = $.getdata('xj_shareCode2') ;
+const nh_shareCode2 = $.getdata('nh_shareCode2') ;
+const zz_shareCode2 = $.getdata('zz_shareCode2') ;
 
 const dd_shareCode3 = $.getdata('dd_shareCode3') ;
 const jx_shareCode3 = $.getdata('jx_shareCode3') ;
 const zd_shareCode3 = $.getdata('zd_shareCode3') ;
 const nc_shareCode3 = $.getdata('nc_shareCode3') ;
 const mc_shareCode3 = $.getdata('mc_shareCode3') ;
+const joy_shareCode3 = $.getdata('joy_shareCode3') ;
+const kd_shareCode3 = $.getdata('kd_shareCode3') ;
+const xj_shareCode3 = $.getdata('xj_shareCode3') ;
+const nh_shareCode3 = $.getdata('nh_shareCode3') ;
+const zz_shareCode3 = $.getdata('zz_shareCode3') ;
 
 let dd_shareCodeVal = "";
 let jx_shareCodeVal = "";
 let zd_shareCodeVal = "";
 let nc_shareCodeVal = "";
 let mc_shareCodeVal = "";
+let joy_shareCodeVal = "";
+let kd_shareCodeVal = "";
+let xj_shareCodeVal = "";
+let nh_shareCodeVal = "";
+let zz_shareCodeVal = "";
 const  dd_shareCodeArr = [];
 const  jx_shareCodeArr = [];
 const  zd_shareCodeArr = [];
 const  nc_shareCodeArr = [];
 const  mc_shareCodeArr = [];
+const  joy_shareCodeArr = [];
+const  kd_shareCodeArr = [];
+const  xj_shareCodeArr = [];
+const  nh_shareCodeArr = [];
+const  zz_shareCodeArr = [];
 let K = 0;
 let tz='';
-const dd=3//单次任务延迟,默认3秒
+let gg;
+const dd=1//单次任务延迟,默认1秒
 
 for (let index = 1; index <= 3; index++) {
     if ($.getdata('dd_shareCode'+index) === undefined || $.getdata('dd_shareCode'+index) === '') {
@@ -63,8 +95,37 @@ for (let index = 1; index <= 3; index++) {
     zd_shareCodeArr.push($.getdata("zd_shareCode"+index));    
     nc_shareCodeArr.push($.getdata("nc_shareCode"+index));
     mc_shareCodeArr.push($.getdata("mc_shareCode"+index));
+    joy_shareCodeArr.push($.getdata("joy_shareCode"+index));
+    kd_shareCodeArr.push($.getdata("kd_shareCode"+index));
+    xj_shareCodeArr.push($.getdata("xj_shareCode"+index));
+    nh_shareCodeArr.push($.getdata("nh_shareCode"+index));
+    zz_shareCodeArr.push($.getdata("zz_shareCode"+index));
   }
-    console.log(`============ 共${dd_shareCodeArr.length}个京东账号  =============\n`)
+      if 
+	(dd_shareCodeArr.length &&
+	 jx_shareCodeArr.length &&
+	 zd_shareCodeArr.length &&
+	 nc_shareCodeArr.length &&
+	 mc_shareCodeArr.length &&
+	 joy_shareCodeArr.length &&
+	 kd_shareCodeArr.length &&
+	 xj_shareCodeArr.length &&
+	 nh_shareCodeArr.length &&
+	 zz_shareCodeArr.length >=1)
+      {
+	 gg=dd_shareCodeArr.length &&
+	 jx_shareCodeArr.length &&
+	 zd_shareCodeArr.length &&
+	 nc_shareCodeArr.length &&
+	 mc_shareCodeArr.length &&
+	 joy_shareCodeArr.length &&
+	 kd_shareCodeArr.length &&
+	 xj_shareCodeArr.length &&
+	 nh_shareCodeArr.length &&
+	 zz_shareCodeArr.length
+	}
+
+    console.log(`============ 共${gg}个京东账号  =============\n`)
 
 all();
 function all() {
@@ -73,7 +134,12 @@ function all() {
   zd_shareCodeVal = zd_shareCodeArr[K];
   nc_shareCodeVal = nc_shareCodeArr[K];
   mc_shareCodeVal = mc_shareCodeArr[K];
-  for (let i = 0; i < 8; i++) {
+  joy_shareCodeVal = joy_shareCodeArr[K];
+  kd_shareCodeVal = kd_shareCodeArr[K];
+  jx_shareCodeVal = jx_shareCodeArr[K];
+  nh_shareCodeVal = nh_shareCodeArr[K];
+  zz_shareCodeVal = zz_shareCodeArr[K];
+  for (let i = 0; i < 11; i++) {
     (function (i) {
       setTimeout(
         function () {
@@ -90,8 +156,18 @@ function all() {
           execnc_shareCode();//京东农场
           if (i == 5 )
           execmc_shareCode();//京东萌宠  
-        else  if (i == 6 ) {
-     console.log('东东工厂Body:');
+	  if (i == 6 )
+          execjoy_shareCode();//京东CrazyJoy任务  
+	  if (i == 7 )
+          execkd_shareCode();//京东口袋书店 
+ 	  if (i == 8 )
+          execxj_shareCode();//京东签到领现金  
+	  if (i == 9 )
+          execnh_shareCode();//京东年货节  
+	  if (i == 10 )
+          execzz_shareCode();//京东赚赚  
+        else  if (i == 11 ) {
+        console.log('东东工厂Body:');
   	console.log( $.dd_shareCodeBody);
   	console.log('\r\n京喜工厂Body:');
   	console.log( $.jx_shareCodeBody);
@@ -101,7 +177,17 @@ function all() {
   	console.log( $.nc_shareCodeBody);
   	console.log('\r\n京东萌宠Body:');
 	console.log( $.mc_shareCodeBody);
-     }else if (i == 7){  
+	console.log('\r\nj京东CrazyJoyBody:');
+	console.log( $.joy_shareCodeBody);
+	console.log('\r\nj京东口袋书店Body:');
+	console.log( $.zz_shareCodeBody);
+	console.log('\r\n京东签到领现金Body:');
+	console.log( $.xj_shareCodeBody);
+	console.log('\r\n京东年货节Body:');
+	console.log( $.nh_shareCodeBody);
+	console.log('\r\n京东赚赚Body:');
+	console.log( $.zz_shareCodeBody);
+     }else if (i == 12){  
        if ( K < dd_shareCodeArr.length - 1) {
               K += 1;
               all();
@@ -126,13 +212,22 @@ function info() {
 function execdd_shareCode() {
   return new Promise((resolve) => {
     const url = { 
-       url: 'http://api.turinglabs.net/api/v1/jd/ddfactory/create/'+dd_shareCodeVal,
+       url: 'http://jd.turinglabs.net/api/v2/jd/ddfactory/create/'+dd_shareCodeVal,
        headers: {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'}
 	}
     $.get(url,(err, resp, data)=> {  
       try {
         $.dd_shareCodeBody = data
-        tz += `东东工厂:`+resp.statusCode+`\n`
+	const obj = JSON.parse(data)
+                
+                if (obj.code == 200) {
+                    ddmsg = `提交成功`
+                } else if (obj.code == 400) {
+                    ddmsg = `代码已存在`
+                } else {
+                    ddmsg = '发生未知错误'
+                }
+        tz += `东东工厂:`+ ddmsg +`\n`
       } catch (e) {
         $.logErr(e, resp)
       } finally {
@@ -146,13 +241,22 @@ function execdd_shareCode() {
 function execjx_shareCode() {
   return new Promise((resolve) => {
     const url = { 
-       url: 'http://api.turinglabs.net/api/v1/jd/jxfactory/create/'+jx_shareCodeVal,
+       url: 'http://jd.turinglabs.net/api/v2/jd/jxfactory/create/'+jx_shareCodeVal,
        headers: {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'},
 	}
     $.get(url,(err, resp, data)=> {  
       try {
         $.jx_shareCodeBody = data
-        tz += `京喜工厂:`+resp.statusCode+`\n`
+	const obj = JSON.parse(data)
+                
+                if (obj.code == 200) {
+                    jxmsg = `提交成功`
+                } else if (obj.code == 400) {
+                    jxmsg = `代码已存在`
+                } else {
+                    jxmsg = '发生未知错误'
+                }
+        tz += `京喜工厂:`+ jxmsg +`\n`
       } catch (e) {
         $.logErr(e, resp)
       } finally {
@@ -166,13 +270,22 @@ function execjx_shareCode() {
 function execzd_shareCode() {
   return new Promise((resolve) => {
     const url = { 
-       url: 'http://api.turinglabs.net/api/v1/jd/bean/create/'+zd_shareCodeVal,
+       url: 'http://jd.turinglabs.net/api/v2/jd/bean/create/'+zd_shareCodeVal,
        headers: {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'},
 	}
     $.get(url,(err, resp, data)=> {  
       try {
         $.zd_shareCodeBody = data
-        tz += `种豆得豆:`+resp.statusCode+`\n`
+	const obj = JSON.parse(data)
+                
+                if (obj.code == 200) {
+                    zdmsg = `提交成功`
+                } else if (obj.code == 400) {
+                    zdmsg = `代码已存在`
+                } else {
+                    zdmsg = '发生未知错误'
+                }
+        tz += `种豆得豆:`+ zdmsg +`\n`
       } catch (e) {
         $.logErr(e, resp)
       } finally {
@@ -186,13 +299,22 @@ function execzd_shareCode() {
 function execnc_shareCode() {
   return new Promise((resolve) => {
     const url = { 
-       url: 'http://api.turinglabs.net/api/v1/jd/farm/create/'+nc_shareCodeVal,
+       url: 'http://jd.turinglabs.net/api/v2/jd/farm/create/'+nc_shareCodeVal,
        headers: {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'},
 	}
     $.get(url,(err, resp, data)=> {  
       try {
         $.nc_shareCodeBody = data
-        tz += `京东农场:`+ resp.statusCode+`\n`
+	const obj = JSON.parse(data)
+                
+                if (obj.code == 200) {
+                    ncmsg = `提交成功`
+                } else if (obj.code == 400) {
+                    ncmsg = `代码已存在`
+                } else {
+                    ncmsg = '发生未知错误'
+                }
+        tz += `京东农场:`+ ncmsg +`\n`
       } catch (e) {
         $.logErr(e, resp)
       } finally {
@@ -207,13 +329,22 @@ function execnc_shareCode() {
 function execmc_shareCode() {
   return new Promise((resolve) => {
     const url = { 
-       url: 'http://api.turinglabs.net/api/v1/jd/pet/create/'+mc_shareCodeVal,
+       url: 'http://jd.turinglabs.net/api/v2/jd/pet/create/'+mc_shareCodeVal,
        headers: {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'},
 	}
     $.get(url,(err, resp, data)=> {  
       try {
         $.mc_shareCodeBody = data
-        tz += `京东萌宠:`+ resp.statusCode+`\n`
+	const obj = JSON.parse(data)
+                
+                if (obj.code == 200) {
+                    mcmsg = `提交成功`
+                } else if (obj.code == 400) {
+                    mcmsg = `代码已存在`
+                } else {
+                    mcmsg = '发生未知错误'
+                }
+        tz += `京东萌宠:`+ mcmsg +`\n`
       } catch (e) {
         $.logErr(e, resp)
       } finally {
@@ -223,6 +354,61 @@ function execmc_shareCode() {
   })
 }
 
+function execjoy_shareCode() {
+  return new Promise((resolve) => {
+    const url = { 
+       url: 'https://code.chiang.fun/api/v1/jd/jdcrazyjoy/create/'+joy_shareCodeVal,
+       headers: {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'},
+	}
+    $.get(url,(err, resp, data)=> {  
+      try {
+        $.joy_shareCodeBody = data
+	const obj = JSON.parse(data)
+                
+                if (obj.code == 200) {
+                    joymsg = `提交成功`
+                } else if (obj.code == 400) {
+                    joymsg = `代码已存在`
+                } else {
+                    joymsg = '发生未知错误'
+                }
+        tz += `京东CrazyJoy:`+ joymsg +`\n`
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve()
+      }
+    })
+  })
+}
+
+function execkd_shareCode() {
+  return new Promise((resolve) => {
+    const url = { 
+       url: 'https://code.chiang.fun/api/v1/jd/jdcrazyjoy/create/'+joy_shareCodeVal,
+       headers: {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'},
+	}
+    $.get(url,(err, resp, data)=> {  
+      try {
+        $.joy_shareCodeBody = data
+	const obj = JSON.parse(data)
+                
+                if (obj.code == 200) {
+                    joymsg = `提交成功`
+                } else if (obj.code == 400) {
+                    joymsg = `代码已存在`
+                } else {
+                    joymsg = '发生未知错误'
+                }
+        tz += `京东CrazyJoy:`+ joymsg +`\n`
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve()
+      }
+    })
+  })
+}
 
 function showmsg() {
   return new Promise((resolve) => {
