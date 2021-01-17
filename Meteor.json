@@ -1,9 +1,9 @@
 {
-  "id": "Datou86.app.sub",
+  "id": "Meteor53.app.sub",
   "name": "Datou86应用订阅",
-  "author": "@Datou86",
-  "icon": "https://avatars3.githubusercontent.com/u/42340256?s=460&v=4",
-  "repo": "https://github.com/Datou86/Quantumult-X",
+  "author": "@Meteor53",
+  "icon": "https://avatars1.githubusercontent.com/u/14371266?s=400&u=4",
+  "repo": "https://github.com/Meteor53/Quantumult-X",
   "apps": [
     
     {
@@ -154,9 +154,9 @@
           "desc": "此处请填写你的京东CrazyJoy码"
         }	      
       ],
-      "author": "@Datou86",
-      "repo": "https://raw.githubusercontent.com/Datou86/Quantumult-X/master/Scripts/shareCode.js",
-      "script": "https://github.com/Datou86/Quantumult-X",
+      "author": "@Meteor53",
+      "repo": "https://raw.githubusercontent.com/Meteor53/Quantumult-X/master/Scripts/shareCode.js",
+      "script": "https://github.com/Meteor53/Quantumult-X",
       "icons": [ "https://raw.githubusercontent.com/Orz-3/mini/master/jd.png","https://raw.githubusercontent.com/Orz-3/task/master/jd.png"]
     }
   ]
