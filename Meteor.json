@@ -8,7 +8,7 @@
     
     {
       "id": "shareCode",
-      "name": "京东云互助码",
+      "name": "互助码提交",
       "keys": [
 	       "zd_shareCode1",
 	       "nc_shareCode1",
