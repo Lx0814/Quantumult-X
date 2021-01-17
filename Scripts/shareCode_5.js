@@ -382,25 +382,53 @@ function execjoy_shareCode() {
   })
 }
 
-function execkd_shareCode() {
+function execxj_shareCode() {
   return new Promise((resolve) => {
     const url = { 
-       url: 'https://code.chiang.fun/api/v1/jd/jdcrazyjoy/create/'+joy_shareCodeVal,
+       url: 'https://code.chiang.fun/api/v1/jd/jdcash/create/'+xj_shareCodeVal,
        headers: {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'},
 	}
     $.get(url,(err, resp, data)=> {  
       try {
-        $.joy_shareCodeBody = data
+        $.xj_shareCodeBody = data
 	const obj = JSON.parse(data)
                 
                 if (obj.code == 200) {
-                    joymsg = `提交成功`
+                    xjmsg = `提交成功`
                 } else if (obj.code == 400) {
-                    joymsg = `代码已存在`
+                    xjmsg = `代码已存在`
                 } else {
-                    joymsg = '发生未知错误'
+                    xjmsg = '发生未知错误'
                 }
-        tz += `京东CrazyJoy:`+ joymsg +`\n`
+        tz += `京东签到领现金:`+ xjmsg +`\n`
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve()
+      }
+    })
+  })
+}
+
+function execzz_shareCode() {
+  return new Promise((resolve) => {
+    const url = { 
+       url: 'https://code.chiang.fun/api/v1/jd/jdzz/create/'+zz_shareCodeVal,
+       headers: {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'},
+	}
+    $.get(url,(err, resp, data)=> {  
+      try {
+        $.zz_shareCodeBody = data
+	const obj = JSON.parse(data)
+                
+                if (obj.code == 200) {
+                    zzmsg = `提交成功`
+                } else if (obj.code == 400) {
+                    zzmsg = `代码已存在`
+                } else {
+                    zzmsg = '发生未知错误'
+                }
+        tz += `京东赚赚:`+ zzmsg +`\n`
       } catch (e) {
         $.logErr(e, resp)
       } finally {
