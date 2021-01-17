@@ -160,7 +160,7 @@ function info() {
 function execdd_shareCode() {
   return new Promise((resolve) => {
     const url = { 
-       url: 'http://api.turinglabs.net/api/v1/jd/ddfactory/create/'+dd_shareCodeVal,
+       url: 'http://jd.turinglabs.net/api/v2/jd/ddfactory/create/'+dd_shareCodeVal,
        headers: {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'}
 	}
     $.get(url,(err, resp, data)=> {  
@@ -189,7 +189,7 @@ function execdd_shareCode() {
 function execjx_shareCode() {
   return new Promise((resolve) => {
     const url = { 
-       url: 'http://api.turinglabs.net/api/v1/jd/jxfactory/create/'+jx_shareCodeVal,
+       url: 'http://jd.turinglabs.net/api/v2/jd/jxfactory/create/'+jx_shareCodeVal,
        headers: {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'},
 	}
     $.get(url,(err, resp, data)=> {  
@@ -218,7 +218,7 @@ function execjx_shareCode() {
 function execzd_shareCode() {
   return new Promise((resolve) => {
     const url = { 
-       url: 'http://api.turinglabs.net/api/v1/jd/bean/create/'+zd_shareCodeVal,
+       url: 'http://jd.turinglabs.net/api/v2/jd/bean/create/'+zd_shareCodeVal,
        headers: {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'},
 	}
     $.get(url,(err, resp, data)=> {  
@@ -247,7 +247,7 @@ function execzd_shareCode() {
 function execnc_shareCode() {
   return new Promise((resolve) => {
     const url = { 
-       url: 'http://api.turinglabs.net/api/v1/jd/farm/create/'+nc_shareCodeVal,
+       url: 'http://jd.turinglabs.net/api/v2/jd/farm/create/'+nc_shareCodeVal,
        headers: {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'},
 	}
     $.get(url,(err, resp, data)=> {  
@@ -277,7 +277,7 @@ function execnc_shareCode() {
 function execmc_shareCode() {
   return new Promise((resolve) => {
     const url = { 
-       url: 'http://api.turinglabs.net/api/v1/jd/pet/create/'+mc_shareCodeVal,
+       url: 'http://jd.turinglabs.net/api/v2/jd/pet/create/'+mc_shareCodeVal,
        headers: {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'},
 	}
     $.get(url,(err, resp, data)=> {  
