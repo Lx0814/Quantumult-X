@@ -119,8 +119,8 @@
           "desc": "此处请填写你的京东CrazyJoy码"
         },
         {
-          "id": "joy_shareCode1",
-          "name": "账号一的京东口袋书店",
+          "id": "joy_shareCode2",
+          "name": "账号二的京东口袋书店",
           "val": "",
           "type": "text",
           "desc": "此处请填写你的口袋书店互助码"
@@ -168,8 +168,8 @@
           "desc": "此处请填写你的京东CrazyJoy码"
         },
         {
-          "id": "joy_shareCode1",
-          "name": "账号一的京东口袋书店",
+          "id": "joy_shareCode3",
+          "name": "账号三的京东口袋书店",
           "val": "",
           "type": "text",
           "desc": "此处请填写你的口袋书店互助码"
