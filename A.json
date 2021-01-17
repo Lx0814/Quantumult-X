@@ -78,10 +78,24 @@
         },
         {
           "id": "xj_shareCode1",
-          "name": "账号一的京东口签到领现金",
+          "name": "账号一的京东签到领现金",
           "val": "",
           "type": "text",
           "desc": "此处请填写你的领现金互助码"
+        },
+        {
+          "id": "nh_shareCode1",
+          "name": "账号一的京东年货节",
+          "val": "",
+          "type": "text",
+          "desc": "此处请填写你的年货节互助码"
+        },
+        {
+          "id": "zz_shareCode1",
+          "name": "账号一的京东赚赚",
+          "val": "",
+          "type": "text",
+          "desc": "此处请填写你的京东赚赚互助码"
         },	
 	{
           "id": "zd_shareCode2",
@@ -134,10 +148,24 @@
         },
         {
           "id": "xj_shareCode2",
-          "name": "账号二的京东口签到领现金",
+          "name": "账号二的京东签到领现金",
           "val": "",
           "type": "text",
           "desc": "此处请填写你的领现金互助码"
+        },
+        {
+          "id": "nh_shareCode2",
+          "name": "账号二的京东年货节",
+          "val": "",
+          "type": "text",
+          "desc": "此处请填写你的年货节互助码"
+        },
+        {
+          "id": "zz_shareCode2",
+          "name": "账号二的京东赚赚",
+          "val": "",
+          "type": "text",
+          "desc": "此处请填写你的京东赚赚互助码"
         },	
 	{
           "id": "zd_shareCode3",
@@ -194,6 +222,20 @@
           "val": "",
           "type": "text",
           "desc": "此处请填写你的领现金互助码"
+        },
+        {
+          "id": "nh_shareCode3",
+          "name": "账号三的京东年货节",
+          "val": "",
+          "type": "text",
+          "desc": "此处请填写你的年货节互助码"
+        },
+        {
+          "id": "zz_shareCode3",
+          "name": "账号三的京东赚赚",
+          "val": "",
+          "type": "text",
+          "desc": "此处请填写你的京东赚赚互助码"
         }	      
       ],
       "author": "@Meteor53",
