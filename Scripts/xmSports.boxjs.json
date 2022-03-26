@@ -3,7 +3,7 @@
   "name": "xmSports脚本订阅",
   "author": "@meteor",
   "icon": "https://avatars.githubusercontent.com/u/14371266?v=4",
-  "repo": "https://github.com/lx0814/Quantumult-X/",
+  "repo": "https://github.com/lx0814/Quantumult-X",
   "apps": [
     {
       "id": "xmSports",
@@ -37,7 +37,7 @@
         }
       ],
       "author": "@lxk0301",
-      "repo": "https://github.com/lxk0301/jd_scripts",
+      "repo": "https://github.com/lx0814/Quantumult-X",
       "script": "https://gist.githubusercontent.com/Lx0814/8ec145f598cc74624c28c1a3fb45846b/raw/xmSports.js",
       "icons": [
         "https://raw.githubusercontent.com/58xinian/icon/master/xmyd_mini.png",
